@@ -28,7 +28,6 @@ class RegisterForm(UserCreationForm):
         self.fields['password2'].widget.attrs.update({'placeholder': 'Подтвердите пароль'})
 
 
-
 class LoginForm(forms.Form):
     username = forms.CharField(
         label='Имя пользователя',

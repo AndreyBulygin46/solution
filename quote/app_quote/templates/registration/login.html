@@ -3,13 +3,34 @@
 
 {% block content %}
   <h2>Вход</h2>
+
+  {% if form.non_field_errors %}
+    <div class="tooltip-error">
+      {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="tooltip-error">
+            {% for error in field.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
     <button type="submit">Войти</button>
   </form>
-  {% if form.errors %}
-    <p style="color: red;">{{ form.errors }}</p>
-  {% endif %}
+
   <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
 {% endblock %}
