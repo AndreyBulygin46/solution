@@ -120,7 +120,7 @@ def add_quote(request):
 
 def popular_quotes(request):
     quotes = Quote.objects.annotate(
-        like_count=Count('vote', filter=Q(vote__is_like=True))
+        like_count=Count('votes', filter=Q(votes__is_like=True))
     ).order_by('-like_count')
 
     context = {

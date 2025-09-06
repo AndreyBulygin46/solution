@@ -46,11 +46,11 @@ class Quote(models.Model):
 
 
     def like_count(self):
-        return self.vote_set.filter(is_like=True).count()
+        return self.votes.filter(is_like=True).count()
 
 
     def dislike_count(self):
-        return self.vote_set.filter(is_like=False).count()
+        return self.votes.filter(is_like=False).count()
 
 
 class ViewCounter(models.Model):
@@ -64,7 +64,7 @@ class ViewCounter(models.Model):
 
 class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    quote = models.ForeignKey(Quote, on_delete=models.CASCADE)
+    quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name='votes')
     is_like = models.BooleanField()
 
     class Meta:
