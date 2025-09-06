@@ -1,12 +1,32 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 
 class RegisterForm(UserCreationForm):
+    password1 = forms.CharField(
+        label="Пароль",
+        widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'}),
+        validators=[
+            RegexValidator(
+                regex=r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
+                message='Пароль должен содержать минимум 8 символов, включая буквы и цифры.',
+                code='password_too_short'
+            )
+        ]
+    )
+
     class Meta:
         model = User
         fields = ("username", "password1", "password2")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password2'].label = "Подтвердите пароль"
+        self.fields['password2'].widget.attrs.update({'placeholder': 'Подтвердите пароль'})
+
 
 
 class LoginForm(forms.Form):

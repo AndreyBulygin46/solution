@@ -129,3 +129,35 @@ a:hover {
     font-size: 1rem;
     cursor: pointer;
 }
+
+.tooltip-error {
+    color: #dc3545;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: inline-block;
+    position: relative;
+    cursor: help;
+}
+
+.tooltip-error::after {
+    content: attr(data-tooltip);
+    visibility: hidden;
+    width: 200px;
+    background: #ffdddd;
+    color: #dc3545;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip-error:hover::after {
+    visibility: visible;
+    opacity: 1;
+}
