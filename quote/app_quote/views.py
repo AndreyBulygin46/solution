@@ -1,6 +1,7 @@
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login
+from django.contrib import messages
 from .forms import RegisterForm, LoginForm, AddQuoteForm
 from .models import Quote, ViewCounter, Vote
 from django.contrib.auth.decorators import login_required
@@ -73,6 +74,7 @@ def delete_quote(request, quote_id):
     quote = get_object_or_404(Quote, id=quote_id)
     if request.user == quote.author:
         quote.delete()
+        messages.success(request, "Цитата успешно удалена.")
     else:
         return HttpResponseForbidden("Вы можете удалять только свои цитаты.")
     return redirect('home')
