@@ -49,6 +49,7 @@ class ViewCounter(models.Model):
     quote = models.OneToOneField(Quote, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=0)
 
+
     def __str__(self):
         return f"{self.quote} - {self.count} просмотров"
 

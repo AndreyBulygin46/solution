@@ -7,9 +7,10 @@
       <p>{{ no_quotes_message }}</p>
     {% else %}
       <p>"{{ quote.text }}"</p>
-      <small>— {{ quote.source }}</small>
-
+      <p>Источник: {{ quote.source }}</p>
       <p class="views">Просмотры: {{ view_count }}</p>
+      <p class="author">Добавлено автором: {{ author }}</p>
+      <p class="time">Дата добавления: {{ create_at }}</p>
 
       {% if user.is_authenticated %}
         <form method="post">

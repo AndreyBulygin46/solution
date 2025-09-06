@@ -50,6 +50,8 @@ def home(request):
     context = {
         'quote': selected_quote,
         'view_count': view_counter.count,
+        'author': selected_quote.author.username,
+        'create_at': selected_quote.created_at
     }
 
     if request.method == 'POST':
