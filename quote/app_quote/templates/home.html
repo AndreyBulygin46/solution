@@ -22,6 +22,8 @@
       <p class="views">Просмотры: {{ view_count }}</p>
       <p class="author">Добавлено автором: {{ author }}</p>
       <p class="time">Дата добавления: {{ create_at }}</p>
+      <p>👍 {{ like_count }} | 👎 {{ dislike_count }}</p>
+
 
       {% if user.is_authenticated %}
         <form method="post">

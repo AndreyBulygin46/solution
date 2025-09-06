@@ -38,8 +38,8 @@ def home(request):
         return render(request, 'home.html', {
             'quote': None,
             'view_count': 0,
-            'no_quotes_message': "Еще нет цитат."
-            })
+            'no_quotes_message': "Еще нет цитат.",
+        })
 
     weights = [q.weight for q in quotes]
     selected_quote = random.choices(quotes, weights=weights, k=1)[0]
@@ -52,9 +52,23 @@ def home(request):
         'quote': selected_quote,
         'view_count': view_counter.count,
         'author': selected_quote.author.username,
-        'create_at': selected_quote.created_at
+        'create_at': selected_quote.created_at,
+        'user_vote': None,  # Для отображения текущего голоса
     }
 
+    context.update({
+        'like_count': selected_quote.like_count(),
+        'dislike_count': selected_quote.dislike_count(),
+    })
+
+    if request.user.is_authenticated:
+        try:
+            user_vote = Vote.objects.get(user=request.user, quote=selected_quote)
+            context['user_vote'] = user_vote.is_like
+        except Vote.DoesNotExist:
+            pass
+
+    # views.py
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect('login')
@@ -62,9 +76,19 @@ def home(request):
         vote_type = request.POST.get('vote')
         if vote_type in ['like', 'dislike']:
             is_like = vote_type == 'like'
-            vote, created = Vote.objects.get_or_create(user=request.user, quote=selected_quote)
-            vote.is_like = is_like
-            vote.save()
+            try:
+                vote = Vote.objects.get(user=request.user, quote=selected_quote)
+                vote.is_like = is_like
+                vote.save()
+            except Vote.DoesNotExist:
+                Vote.objects.create(
+                    user=request.user,
+                    quote=selected_quote,
+                    is_like=is_like
+                )
+            messages.success(request, f"{'Лайк' if is_like else 'Дизлайк'} установлен.")
+            return redirect('home')
+
 
     return render(request, 'home.html', context)
 

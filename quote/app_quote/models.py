@@ -45,6 +45,14 @@ class Quote(models.Model):
         super().save(*args, **kwargs)
 
 
+    def like_count(self):
+        return self.vote_set.filter(is_like=True).count()
+
+
+    def dislike_count(self):
+        return self.vote_set.filter(is_like=False).count()
+
+
 class ViewCounter(models.Model):
     quote = models.OneToOneField(Quote, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=0)
