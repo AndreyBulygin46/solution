@@ -1,3 +1,4 @@
+/* main.css */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -19,6 +20,20 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap; /
+}
+
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
+}
+
+.header-left p {
+    margin-right: 20px;
+}
+
+.header-right {
+    margin-left: auto;
 }
 
 header a {
@@ -26,6 +41,24 @@ header a {
     color: #007bff;
     font-weight: bold;
     margin-left: 10px;
+}
+
+.header-right form {
+    display: inline;
+    margin: 0;
+}
+
+.header-right button {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+}
+
+.header-right button:hover {
+    text-decoration: underline;
 }
 
 main {
@@ -100,6 +133,16 @@ a:hover {
     main {
         margin: 20px;
         padding: 20px;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-right {
+        margin-left: 0;
+        margin-top: 10px;
     }
 }
 
