@@ -1,5 +1,5 @@
 from django.http import HttpResponseForbidden
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login
 from .forms import RegisterForm, LoginForm, AddQuoteForm
 from .models import Quote, ViewCounter, Vote

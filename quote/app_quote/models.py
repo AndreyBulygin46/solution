@@ -19,8 +19,8 @@ class Quote(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['source', 'text'],
-                name='unique_source_text',
+                fields=['text'],
+                name='unique_text',
                 violation_error_message="Цитата уже существует для этого источника"
             ),
             models.CheckConstraint(
