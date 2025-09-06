@@ -8,5 +8,8 @@
     {{ form.as_p }}
     <button type="submit">Войти</button>
   </form>
+  {% if form.errors %}
+    <p style="color: red;">{{ form.errors }}</p>
+  {% endif %}
   <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
 {% endblock %}

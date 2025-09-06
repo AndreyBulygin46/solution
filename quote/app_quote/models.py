@@ -39,3 +39,23 @@ class Quote(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+
+
+class ViewCounter(models.Model):
+    quote = models.OneToOneField(Quote, on_delete=models.CASCADE)
+    count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.quote} - {self.count} просмотров"
+
+
+class Vote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quote = models.ForeignKey(Quote, on_delete=models.CASCADE)
+    is_like = models.BooleanField()
+
+    class Meta:
+        unique_together = ('user', 'quote')
+
+    def __str__(self):
+        return f"{self.user} {'лайкнул' if self.is_like else 'дизлайкнул'} {self.quote}"
