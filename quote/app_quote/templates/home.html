@@ -3,24 +3,28 @@
 
 {% block content %}
   <div class="quote-card">
-    <p>"{{ quote.text }}"</p>
-    <small>— {{ quote.source }}</small>
+    {% if no_quotes_message %}
+      <p>{{ no_quotes_message }}</p>
+    {% else %}
+      <p>"{{ quote.text }}"</p>
+      <small>— {{ quote.source }}</small>
 
-    <p class="views">Просмотры: {{ view_count }}</p>
+      <p class="views">Просмотры: {{ view_count }}</p>
 
-    {% if user.is_authenticated %}
-      <form method="post">
-        {% csrf_token %}
-        <button type="submit" name="vote" value="like">👍 Лайк</button>
-        <button type="submit" name="vote" value="dislike">👎 Дизлайк</button>
-      </form>
-    {% endif %}
+      {% if user.is_authenticated %}
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" name="vote" value="like">👍 Лайк</button>
+          <button type="submit" name="vote" value="dislike">👎 Дизлайк</button>
+        </form>
+      {% endif %}
 
-    {% if user.is_authenticated and user == quote.author %}
-      <form action="{% url 'delete_quote' quote.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Удалить цитату</button>
-      </form>
+      {% if user.is_authenticated and user == quote.author %}
+        <form action="{% url 'delete_quote' quote.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Удалить цитату</button>
+        </form>
+      {% endif %}
     {% endif %}
   </div>
 {% endblock %}
