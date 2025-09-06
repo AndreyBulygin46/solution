@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register, user_login, home, delete_quote, add_quote
+from .views import register, user_login, home, delete_quote, add_quote, popular_quotes
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('delete/<int:quote_id>/', delete_quote, name='delete_quote'),
     path('add/', add_quote, name='add_quote'),
+    path('popular/', popular_quotes, name='popular_quotes'),
 ]

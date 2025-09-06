@@ -1,0 +1,23 @@
+<!-- popular.html -->
+{% extends "base.html" %}
+{% block title %}Популярные цитаты{% endblock %}
+
+{% block content %}
+  <h2>Топ-10 самых популярных цитат</h2>
+
+  {% if quotes %}
+    <div class="popular-quotes-list">
+      {% for quote in quotes %}
+        <div class="quote-card">
+          <p>"{{ quote.text }}"</p>
+          <p>Источник: {{ quote.source }}</p>
+          <p>Автор: {{ quote.author.username }}</p>
+          <p>Дата добавления: {{ quote.created_at|date:"d.m.Y" }}</p>
+          <p>👍 {{ quote.like_count }} | 👎 {{ quote.dislike_count }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Пока нет популярных цитат.</p>
+  {% endif %}
+{% endblock %}

@@ -5,6 +5,7 @@ from django.contrib import messages
 from .forms import RegisterForm, LoginForm, AddQuoteForm
 from .models import Quote, ViewCounter, Vote
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
 import random
 
 def register(request):
@@ -117,3 +118,13 @@ def add_quote(request):
         form = AddQuoteForm()
     return render(request, 'quotes/add_quote.html', {'form': form})
 
+def popular_quotes(request):
+    quotes = Quote.objects.annotate(
+        like_count=Count('vote', filter=Q(vote__is_like=True))
+    ).order_by('-like_count')
+
+    context = {
+        'quotes': quotes,
+    }
+
+    return render(request, 'popular.html', context)
