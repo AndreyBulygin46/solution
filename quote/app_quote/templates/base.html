@@ -27,6 +27,7 @@
                     <button type="submit" style="background: none; border: none; color: #007bff; cursor: pointer;">Выйти</button>
                 </form>
             {% else %}
+                <a href="{% url 'home' %}">Главная</a>
                 <a href="{% url 'login' %}">Войти</a>
                 <a href="{% url 'register' %}">Регистрация</a>
             {% endif %}
