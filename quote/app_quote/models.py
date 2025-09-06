@@ -1,0 +1,41 @@
+from django.db import models
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+
+
+class Quote(models.Model):
+    source = models.CharField(max_length=100)
+    text = models.TextField()
+    weight = models.PositiveIntegerField(default=1, verbose_name='Вес')
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name='Автор')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['source', 'text'],
+                name='unique_source_text',
+                violation_error_message="Цитата уже существует для этого источника"
+            ),
+            models.CheckConstraint(
+                check=models.Q(source__length__gte=1),
+                name='source_not_empty',
+                violation_error_message="Источник не может быть пустым"
+            )
+        ]
+
+    def clean(self):
+        queryset = Quote.objects.filter(source=self.source)
+        if self.pk:
+            queryset = queryset.exclude(pk=self.pk)
+        if queryset.count() >= 3:
+            raise ValidationError(
+                f"Максимум 3 цитаты на источник '{self.source}'")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
