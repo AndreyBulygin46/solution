@@ -31,14 +31,20 @@ header {
     margin-right: 20px;
 }
 
+.header-left {
+    margin-right: 0px;
+}
+
 .header-center {
-    flex: 0 0 auto;
+    flex: 100px 0 auto;
     text-align: center;
     margin: 0 20px;
+    margin-left: 100px;
+    margin-right: 250px;
 }
 
 .header-right {
-    margin-left: auto;
+    margin-left: 0px;
 }
 
 header a {
