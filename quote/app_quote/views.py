@@ -53,7 +53,8 @@ def home(request):
         'view_count': view_counter.count,
         'author': selected_quote.author.username,
         'create_at': selected_quote.created_at,
-        'user_vote': None,  # Для отображения текущего голоса
+        'user_vote': None,
+        'has_voted': False,
     }
 
     context.update({
@@ -65,6 +66,7 @@ def home(request):
         try:
             user_vote = Vote.objects.get(user=request.user, quote=selected_quote)
             context['user_vote'] = user_vote.is_like
+            context['has_voted'] = True
         except Vote.DoesNotExist:
             pass
 
@@ -99,8 +101,6 @@ def delete_quote(request, quote_id):
     if request.user == quote.author:
         quote.delete()
         messages.success(request, "Цитата успешно удалена.")
-    else:
-        return HttpResponseForbidden("Вы можете удалять только свои цитаты.")
     return redirect('home')
 
 

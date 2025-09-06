@@ -24,7 +24,9 @@
       <p class="time">Дата добавления: {{ create_at }}</p>
       <p>👍 {{ like_count }} | 👎 {{ dislike_count }}</p>
 
-
+      {% if has_voted %}
+        <p style="color: red;">Вы уже проголосовали</p>
+      {% endif %}
       {% if user.is_authenticated %}
         <form method="post">
           {% csrf_token %}
