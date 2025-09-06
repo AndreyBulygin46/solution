@@ -31,6 +31,14 @@ def user_login(request):
 
 def home(request):
     quotes = list(Quote.objects.all())
+
+    if not quotes:
+        return render(request, 'home.html', {
+            'quote': None,
+            'view_count': 0,
+            'no_quotes_message': "Еще нет цитат."
+            })
+
     weights = [q.weight for q in quotes]
     selected_quote = random.choices(quotes, weights=weights, k=1)[0]
 
@@ -65,4 +73,5 @@ def delete_quote(request, quote_id):
     else:
         return HttpResponseForbidden("Вы можете удалять только свои цитаты.")
     return redirect('home')
+
 

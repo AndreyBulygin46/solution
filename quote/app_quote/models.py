@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F, Func, Value
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
@@ -8,7 +9,8 @@ class Quote(models.Model):
     text = models.TextField()
     weight = models.PositiveIntegerField(default=1, verbose_name='Вес')
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Автор')
+        User, on_delete=models.CASCADE, verbose_name='Автор'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -22,10 +24,11 @@ class Quote(models.Model):
                 violation_error_message="Цитата уже существует для этого источника"
             ),
             models.CheckConstraint(
-                check=models.Q(source__length__gte=1),
-                name='source_not_empty',
+                check=~models.Q(source=''),
+                name='non_empty_source',
                 violation_error_message="Источник не может быть пустым"
-            )
+            ),
+
         ]
 
     def clean(self):
@@ -34,7 +37,8 @@ class Quote(models.Model):
             queryset = queryset.exclude(pk=self.pk)
         if queryset.count() >= 3:
             raise ValidationError(
-                f"Максимум 3 цитаты на источник '{self.source}'")
+                f"Максимум 3 цитаты на источник '{self.source}'"
+            )
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -59,3 +63,4 @@ class Vote(models.Model):
 
     def __str__(self):
         return f"{self.user} {'лайкнул' if self.is_like else 'дизлайкнул'} {self.quote}"
+
