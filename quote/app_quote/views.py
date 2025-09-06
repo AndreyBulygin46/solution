@@ -1,7 +1,7 @@
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, AddQuoteForm
 from .models import Quote, ViewCounter, Vote
 from django.contrib.auth.decorators import login_required
 import random
@@ -75,4 +75,17 @@ def delete_quote(request, quote_id):
         return HttpResponseForbidden("Вы можете удалять только свои цитаты.")
     return redirect('home')
 
+
+@login_required
+def add_quote(request):
+    if request.method == 'POST':
+        form = AddQuoteForm(request.POST)
+        if form.is_valid():
+            quote = form.save(commit=False)
+            quote.author = request.user
+            quote.save()
+            return redirect('home')
+    else:
+        form = AddQuoteForm()
+    return render(request, 'quotes/add_quote.html', {'form': form})
 

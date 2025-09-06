@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django import forms
+from .models import Quote
 from django.core.validators import RegexValidator
 
 
@@ -49,3 +50,21 @@ class LoginForm(forms.Form):
             if not self.user or not self.user.check_password(password):
                 raise forms.ValidationError("Неверный логин или пароль.")
         return cleaned_data
+
+
+class AddQuoteForm(forms.ModelForm):
+    class Meta:
+        model = Quote
+        fields = ['source', 'text', 'weight']
+        labels = {
+            'source': 'Источник',
+            'text': 'Цитата',
+            'weight': 'Вес (по умолчанию 1)',
+        }
+        widgets = {
+            'text': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['weight'].required = False
