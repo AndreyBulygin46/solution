@@ -1,4 +1,5 @@
-from django.http import HttpResponseForbidden
+# views.py
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login
 from django.contrib import messages
@@ -7,6 +8,7 @@ from .models import Quote, ViewCounter, Vote
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 import random
+
 
 def register(request):
     if request.method == 'POST':
@@ -71,10 +73,36 @@ def home(request):
         except Vote.DoesNotExist:
             pass
 
-    # views.py
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect('login')
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            vote_type = request.POST.get('vote')
+            quote_id = request.POST.get('quote_id')
+            quote = get_object_or_404(Quote, id=quote_id)
+
+            print(f"[DEBUG] Получено: vote_type={vote_type}, quote_id={quote_id}")
+
+            try:
+                vote = Vote.objects.get(user=request.user, quote=quote)
+                vote.is_like = (vote_type == 'like')
+                vote.save()
+            except Vote.DoesNotExist:
+                Vote.objects.create(
+                    user=request.user,
+                    quote=quote,
+                    is_like=(vote_type == 'like')
+                )
+
+            like_count = quote.like_count()
+            dislike_count = quote.dislike_count()
+
+            return JsonResponse({
+                'like_count': like_count,
+                'dislike_count': dislike_count,
+                'message': f"{'Лайк' if vote_type == 'like' else 'Дизлайк'} установлен"
+            })
 
         vote_type = request.POST.get('vote')
         if vote_type in ['like', 'dislike']:
@@ -91,7 +119,6 @@ def home(request):
                 )
             messages.success(request, f"{'Лайк' if is_like else 'Дизлайк'} установлен.")
             return redirect('home')
-
 
     return render(request, 'home.html', context)
 
@@ -118,10 +145,11 @@ def add_quote(request):
         form = AddQuoteForm()
     return render(request, 'quotes/add_quote.html', {'form': form})
 
+
 def popular_quotes(request):
     quotes = Quote.objects.annotate(
         like_count=Count('votes', filter=Q(votes__is_like=True))
-    ).order_by('-like_count')
+    ).order_by('-like_count')[:10]
 
     context = {
         'quotes': quotes,

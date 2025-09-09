@@ -1,4 +1,3 @@
-<!-- home.html -->
 {% extends "base.html" %}
 {% block title %}Главная страница{% endblock %}
 
@@ -22,30 +21,88 @@
       <p class="views">Просмотры: {{ view_count }}</p>
       <p class="author">Добавлено автором: {{ author }}</p>
       <p class="time">Дата добавления: {{ create_at }}</p>
-      <p>👍 {{ like_count }} | 👎 {{ dislike_count }}</p>
+      <p>
+        👍 <span id="like-count">{{ like_count }}</span> |
+        👎 <span id="dislike-count">{{ dislike_count }}</span>
+      </p>
+
+      {% if user.is_authenticated %}
+        <form id="vote-form" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="quote_id" value="{{ quote.id }}">
+          <input type="hidden" name="vote" id="vote-value">
+          <button 
+            type="submit" 
+            class="vote-btn" 
+            data-vote="like"
+            {% if has_voted and user_vote %}disabled{% endif %}
+          >
+            👍 Лайк
+          </button>
+          <button 
+            type="submit" 
+            class="vote-btn" 
+            data-vote="dislike"
+            {% if has_voted and not user_vote %}disabled{% endif %}
+          >
+            👎 Дизлайк
+          </button>
+        </form>
+      {% endif %}
 
       {% if has_voted %}
         <p style="color: red;">Вы уже проголосовали</p>
-      {% endif %}
-      {% if user.is_authenticated %}
-        <form method="post">
-          {% csrf_token %}
-          <button type="submit" name="vote" value="like">👍 Лайк</button>
-          <button type="submit" name="vote" value="dislike">👎 Дизлайк</button>
-        </form>
       {% endif %}
 
       {% if user.is_authenticated and user == quote.author %}
         <form action="{% url 'delete_quote' quote.id %}" method="post">
           {% csrf_token %}
-          <button 
-          type="submit"
-          onclick="return confirm('Вы уверены, что хотите удалить эту цитату?')"
+          <button
+            type="submit"
+            onclick="return confirm('Вы уверены, что хотите удалить эту цитату?')"
           >
-          Удалить цитату
+            Удалить цитату
           </button>
         </form>
       {% endif %}
     {% endif %}
   </div>
+
+  <script>
+
+    document.querySelectorAll('.vote-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const voteValue = this.getAttribute('data-vote');
+        document.getElementById('vote-value').value = voteValue;
+      });
+    });
+
+    document.getElementById('vote-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = this;
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('like-count').textContent = data.like_count;
+        document.getElementById('dislike-count').textContent = data.dislike_count;
+        document.querySelectorAll('.vote-btn').forEach(btn => btn.disabled = true);
+
+        if (data.message) {
+          alert(data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Ошибка:', error);
+      });
+    });
+  </script>
 {% endblock %}
