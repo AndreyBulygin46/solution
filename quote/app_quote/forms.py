@@ -10,13 +10,13 @@ class RegisterForm(UserCreationForm):
     password1 = forms.CharField(
         label="Пароль",
         widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'}),
-        validators=[
-            RegexValidator(
-                regex=r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
-                message='Пароль должен содержать минимум 8 символов, включая буквы и цифры.',
-                code='password_too_short'
-            )
-        ]
+        # validators=[
+        #     RegexValidator(
+        #         regex=r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
+        #         message='Пароль должен содержать минимум 8 символов, только буквы и цифры.',
+        #         code='password_too_short'
+        #     )
+        # ]
     )
 
     class Meta:
