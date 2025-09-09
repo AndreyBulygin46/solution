@@ -26,6 +26,8 @@ class QuoteAdmin(admin.ModelAdmin):
         'weight',
         'created_at',
         'views_count',
+        'like_count',
+        'dislike_count',
     )
     search_fields = ('text', 'source', 'author__username')
     list_filter = ('source', 'created_at', 'author')
