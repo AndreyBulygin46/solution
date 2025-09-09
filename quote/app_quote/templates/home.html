@@ -31,17 +31,17 @@
           {% csrf_token %}
           <input type="hidden" name="quote_id" value="{{ quote.id }}">
           <input type="hidden" name="vote" id="vote-value">
-          <button 
-            type="submit" 
-            class="vote-btn" 
+          <button
+            type="submit"
+            class="vote-btn"
             data-vote="like"
             {% if has_voted and user_vote %}disabled{% endif %}
           >
             👍 Лайк
           </button>
-          <button 
-            type="submit" 
-            class="vote-btn" 
+          <button
+            type="submit"
+            class="vote-btn"
             data-vote="dislike"
             {% if has_voted and not user_vote %}disabled{% endif %}
           >

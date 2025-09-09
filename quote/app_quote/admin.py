@@ -30,7 +30,8 @@ class QuoteAdmin(admin.ModelAdmin):
     search_fields = ('text', 'source', 'author__username')
     list_filter = ('source', 'created_at', 'author')
     readonly_fields = ('created_at',)
-    inlines = [ViewCounterInline, VoteInline]  # Отображение статистики внутри цитаты
+    # Отображение статистики внутри цитаты
+    inlines = [ViewCounterInline, VoteInline]
 
     def views_count(self, obj):
         """Количество просмотров цитаты."""
@@ -38,6 +39,5 @@ class QuoteAdmin(admin.ModelAdmin):
     views_count.short_description = 'Просмотры'
 
 
-# Регистрация остальных моделей (если нужно)
 admin.site.register(ViewCounter)
 admin.site.register(Vote)

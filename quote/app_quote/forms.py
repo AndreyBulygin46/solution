@@ -26,14 +26,16 @@ class RegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['password2'].label = "Подтвердите пароль"
-        self.fields['password2'].widget.attrs.update({'placeholder': 'Подтвердите пароль'})
+        self.fields['password2'].widget.attrs.update(
+            {'placeholder': 'Подтвердите пароль'})
 
 
 class LoginForm(forms.Form):
     username = forms.CharField(
         label='Имя пользователя',
         max_length=150,
-        widget=forms.TextInput(attrs={'placeholder': 'Введите имя пользователя'})
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Введите имя пользователя'})
     )
     password = forms.CharField(
         label='Пароль',

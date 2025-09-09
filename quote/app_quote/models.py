@@ -44,10 +44,8 @@ class Quote(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
-
     def like_count(self):
         return self.votes.filter(is_like=True).count()
-
 
     def dislike_count(self):
         return self.votes.filter(is_like=False).count()
@@ -57,14 +55,14 @@ class ViewCounter(models.Model):
     quote = models.OneToOneField(Quote, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=0)
 
-
     def __str__(self):
         return f"{self.quote} - {self.count} просмотров"
 
 
 class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name='votes')
+    quote = models.ForeignKey(
+        Quote, on_delete=models.CASCADE, related_name='votes')
     is_like = models.BooleanField()
 
     class Meta:
@@ -72,4 +70,3 @@ class Vote(models.Model):
 
     def __str__(self):
         return f"{self.user} {'лайкнул' if self.is_like else 'дизлайкнул'} {self.quote}"
-

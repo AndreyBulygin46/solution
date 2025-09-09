@@ -47,7 +47,8 @@ def home(request):
     weights = [q.weight for q in quotes]
     selected_quote = random.choices(quotes, weights=weights, k=1)[0]
 
-    view_counter, created = ViewCounter.objects.get_or_create(quote=selected_quote)
+    view_counter, created = ViewCounter.objects.get_or_create(
+        quote=selected_quote)
     view_counter.count += 1
     view_counter.save()
 
@@ -67,7 +68,8 @@ def home(request):
 
     if request.user.is_authenticated:
         try:
-            user_vote = Vote.objects.get(user=request.user, quote=selected_quote)
+            user_vote = Vote.objects.get(
+                user=request.user, quote=selected_quote)
             context['user_vote'] = user_vote.is_like
             context['has_voted'] = True
         except Vote.DoesNotExist:
@@ -82,7 +84,8 @@ def home(request):
             quote_id = request.POST.get('quote_id')
             quote = get_object_or_404(Quote, id=quote_id)
 
-            print(f"[DEBUG] Получено: vote_type={vote_type}, quote_id={quote_id}")
+            print(
+                f"[DEBUG] Получено: vote_type={vote_type}, quote_id={quote_id}")
 
             try:
                 vote = Vote.objects.get(user=request.user, quote=quote)
@@ -108,7 +111,8 @@ def home(request):
         if vote_type in ['like', 'dislike']:
             is_like = vote_type == 'like'
             try:
-                vote = Vote.objects.get(user=request.user, quote=selected_quote)
+                vote = Vote.objects.get(
+                    user=request.user, quote=selected_quote)
                 vote.is_like = is_like
                 vote.save()
             except Vote.DoesNotExist:
@@ -117,7 +121,8 @@ def home(request):
                     quote=selected_quote,
                     is_like=is_like
                 )
-            messages.success(request, f"{'Лайк' if is_like else 'Дизлайк'} установлен.")
+            messages.success(
+                request, f"{'Лайк' if is_like else 'Дизлайк'} установлен.")
             return redirect('home')
 
     return render(request, 'home.html', context)
